@@ -1,70 +1,141 @@
-# Getting Started with Create React App
+# Admin Panel
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Admin panel for managing the smesj ecosystem. Currently supports invitation code management.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Clerk Authentication**: Secure login with Clerk
+- **Admin Authorization**: Access restricted to specific admin user
+- **Invitation Management**:
+  - View all invitations
+  - Create new invitations
+  - Copy invitation codes
+  - Generate QR codes for invitations
+  - Delete invitations
+  - Track usage (uses/max uses)
 
-### `npm start`
+## Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Node.js 18+
+- Clerk account with publishable key
+- Access to world-api backend
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Development Setup
 
-### `npm test`
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. **Configure environment**:
+   ```bash
+   cp .env.example .env
+   ```
 
-### `npm run build`
+   Update `.env` with your values:
+   - `REACT_APP_CLERK_PUBLISHABLE_KEY`: Your Clerk publishable key (dev)
+   - `REACT_APP_API_URL`: Backend API URL (default: http://localhost:3003)
+   - `REACT_APP_ADMIN_USER_ID`: Your Clerk user ID for admin access
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. **Start development server**:
+   ```bash
+   npm start
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   The app will open at [http://localhost:3000](http://localhost:3000)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Production Deployment
 
-### `npm run eject`
+1. **Configure production environment**:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+   Create `.env.production` with production values:
+   ```bash
+   REACT_APP_CLERK_PUBLISHABLE_KEY=pk_live_your_production_key
+   REACT_APP_API_URL=https://world-api.smesj.world
+   REACT_APP_ADMIN_USER_ID=user_your_production_clerk_id
+   ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. **Deploy**:
+   ```bash
+   ./deploy.sh
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+   This will:
+   - Build the Docker image
+   - Push to Docker Hub (smesjman/admin-fe)
+   - Deploy to production VM at 172.16.1.244
+   - Start the container on port 3004
+   - Verify deployment at https://admin.smesj.world
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Architecture
 
-## Learn More
+- **Frontend**: React 18 with Clerk authentication
+- **Backend API**: world-api (NestJS)
+- **Deployment**: Docker + Nginx
+- **Authentication**: Clerk (JWT-based)
+- **Authorization**: User ID check against environment variable
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Security
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Only users with the specific admin user ID can access the panel
+- All other authenticated users see an "Access Denied" message
+- Unauthenticated users are prompted to sign in
+- API calls use the world-api backend (no direct database access)
 
-### Code Splitting
+## Folder Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
+admin-fe/
+├── public/             # Static assets
+├── src/
+│   ├── components/     # React components
+│   │   ├── InvitationsManager.js
+│   │   ├── InvitationsManager.css
+│   │   ├── UnauthorizedAccess.js
+│   │   └── UnauthorizedAccess.css
+│   ├── App.js          # Main app component
+│   ├── App.css         # Main app styles
+│   └── index.js        # Entry point with ClerkProvider
+├── Dockerfile          # Multi-stage Docker build
+├── nginx.conf          # Nginx configuration
+├── deploy.sh           # Deployment script
+└── package.json        # Dependencies
+```
 
-### Analyzing the Bundle Size
+## Environment Variables
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `REACT_APP_CLERK_PUBLISHABLE_KEY` | Clerk publishable key | `pk_test_...` |
+| `REACT_APP_API_URL` | Backend API base URL | `https://world-api.smesj.world` |
+| `REACT_APP_ADMIN_USER_ID` | Clerk user ID for admin | `user_2c4SA...` |
 
-### Making a Progressive Web App
+## API Endpoints Used
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+The admin panel communicates with these world-api endpoints:
 
-### Advanced Configuration
+- `GET /invitations` - List all invitations
+- `POST /invitations` - Create new invitation
+- `DELETE /invitations/:id` - Delete invitation
+- `GET /invitations/:code/qr` - Generate QR code
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Future Enhancements
 
-### Deployment
+- [ ] User management
+- [ ] Footy game moderation
+- [ ] Imperial game management
+- [ ] Analytics dashboard
+- [ ] Audit logs
+- [ ] Role-based access control (multiple admin levels)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Support
 
-### `npm run build` fails to minify
+For issues or questions, check the deployment logs:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+ssh smesj@172.16.1.244 'docker logs admin-fe'
+```
+
+## License
+
+Private - Internal use only
