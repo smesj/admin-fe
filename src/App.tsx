@@ -8,7 +8,10 @@ import Login from './pages/Login';
 
 const AdminPanel: React.FC = () => {
   const { user, isLoaded } = useUser();
-  const adminUserId: string | undefined = process.env.REACT_APP_ADMIN_USER_ID;
+  const allowedAdminIds: string[] = [
+    'user_2c01pDe3gdELLLMDyajlX5kbxsu', // Dev user
+    'user_2c4SA6i7JeyTtbxl7fIk4ZgzOHU', // Prod user
+  ];
 
   if (!isLoaded) {
     return (
@@ -18,7 +21,7 @@ const AdminPanel: React.FC = () => {
     );
   }
 
-  const isAdmin: boolean = user?.id === adminUserId;
+  const isAdmin: boolean = user?.id ? allowedAdminIds.includes(user.id) : false;
 
   return (
     <div className="App">
