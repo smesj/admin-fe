@@ -9,11 +9,14 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .manager-header h2 {
   margin: 0;
   color: #333;
+  font-size: clamp(1.25rem, 4vw, 1.75rem);
 }
 
 .create-button {
@@ -185,4 +188,103 @@
 
 .close-button:hover {
   background-color: #555;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .invitations-manager {
+    padding: 12px;
+  }
+
+  .manager-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .manager-header h2 {
+    text-align: center;
+  }
+
+  .create-button {
+    width: 100%;
+    padding: 14px 20px;
+  }
+
+  /* Hide table on mobile and show card layout */
+  .invitations-table {
+    display: none;
+  }
+
+  .invitations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .invitation-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .invitation-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .invitation-card-row:last-child {
+    border-bottom: none;
+  }
+
+  .invitation-card-label {
+    font-weight: 600;
+    color: #666;
+    font-size: 14px;
+  }
+
+  .invitation-card-value {
+    font-size: 14px;
+    color: #333;
+  }
+
+  .invitation-card .actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .invitation-card .action-button {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+
+  .qr-modal-content {
+    margin: 16px;
+    padding: 20px;
+    max-width: 90vw;
+  }
+
+  .qr-modal-content h3 {
+    font-size: 1.1rem;
+    word-break: break-all;
+  }
+
+  .qr-modal-content img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Desktop - show table */
+@media (min-width: 769px) {
+  .invitation-card {
+    display: none;
+  }
 }

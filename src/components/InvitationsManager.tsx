@@ -140,58 +140,111 @@ const InvitationsManager: React.FC = () => {
             <p>No invitations yet. Create your first invitation to get started.</p>
           </div>
         ) : (
-          <table className="invitations-table">
-            <thead>
-              <tr>
-                <th>Code</th>
-                <th>Uses</th>
-                <th>Created</th>
-                <th>Expires</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {invitations.map((invitation) => (
-                <tr key={invitation.id}>
-                  <td>
-                    <code className="invite-code">{invitation.code}</code>
-                  </td>
-                  <td>
+          <>
+            {/* Desktop table view */}
+            <table className="invitations-table">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Uses</th>
+                  <th>Created</th>
+                  <th>Expires</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {invitations.map((invitation) => (
+                  <tr key={invitation.id}>
+                    <td>
+                      <code className="invite-code">{invitation.code}</code>
+                    </td>
+                    <td>
+                      {invitation.usesCount} / {invitation.maxUses}
+                    </td>
+                    <td>{formatDate(invitation.createdAt)}</td>
+                    <td>
+                      {invitation.expiresAt
+                        ? formatDate(invitation.expiresAt)
+                        : 'Never'}
+                    </td>
+                    <td className="actions">
+                      <button
+                        className="action-button copy"
+                        onClick={() => copyToClipboard(invitation.code)}
+                        title="Copy code"
+                      >
+                        Copy
+                      </button>
+                      <button
+                        className="action-button qr"
+                        onClick={() => showQRCode(invitation.code)}
+                        title="Show QR code"
+                      >
+                        QR
+                      </button>
+                      <button
+                        className="action-button delete"
+                        onClick={() => deleteInvitation(invitation.id)}
+                        title="Delete invitation"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Mobile card view */}
+            {invitations.map((invitation) => (
+              <div key={invitation.id} className="invitation-card">
+                <div className="invitation-card-row">
+                  <span className="invitation-card-label">Code</span>
+                  <code className="invite-code">{invitation.code}</code>
+                </div>
+                <div className="invitation-card-row">
+                  <span className="invitation-card-label">Uses</span>
+                  <span className="invitation-card-value">
                     {invitation.usesCount} / {invitation.maxUses}
-                  </td>
-                  <td>{formatDate(invitation.createdAt)}</td>
-                  <td>
+                  </span>
+                </div>
+                <div className="invitation-card-row">
+                  <span className="invitation-card-label">Created</span>
+                  <span className="invitation-card-value">
+                    {formatDate(invitation.createdAt)}
+                  </span>
+                </div>
+                <div className="invitation-card-row">
+                  <span className="invitation-card-label">Expires</span>
+                  <span className="invitation-card-value">
                     {invitation.expiresAt
                       ? formatDate(invitation.expiresAt)
                       : 'Never'}
-                  </td>
-                  <td className="actions">
-                    <button
-                      className="action-button copy"
-                      onClick={() => copyToClipboard(invitation.code)}
-                      title="Copy code"
-                    >
-                      Copy
-                    </button>
-                    <button
-                      className="action-button qr"
-                      onClick={() => showQRCode(invitation.code)}
-                      title="Show QR code"
-                    >
-                      QR
-                    </button>
-                    <button
-                      className="action-button delete"
-                      onClick={() => deleteInvitation(invitation.id)}
-                      title="Delete invitation"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </span>
+                </div>
+                <div className="actions">
+                  <button
+                    className="action-button copy"
+                    onClick={() => copyToClipboard(invitation.code)}
+                  >
+                    Copy Link
+                  </button>
+                  <button
+                    className="action-button qr"
+                    onClick={() => showQRCode(invitation.code)}
+                  >
+                    Show QR Code
+                  </button>
+                  <button
+                    className="action-button delete"
+                    onClick={() => deleteInvitation(invitation.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </>
         )}
       </div>
 

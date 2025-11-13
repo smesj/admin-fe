@@ -72,11 +72,20 @@
 }
 
 @media (max-width: 600px) {
+  .login-container {
+    padding: 12px;
+  }
+
   .login-card {
-    padding: 30px 20px;
+    padding: 24px 12px;
   }
 
   .login-card h1 {
     font-size: 24px;
+  }
+
+  .clerk-signin-wrapper {
+    margin-left: -12px;
+    margin-right: -12px;
   }
 }
