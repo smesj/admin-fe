@@ -5,6 +5,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from '@clerk/c
 import InvitationsManager from './components/InvitationsManager';
 import UnauthorizedAccess from './components/UnauthorizedAccess';
 import Login from './pages/Login';
+import Profile from './pages/Profile';
 
 const AdminPanel: React.FC = () => {
   const { user, isLoaded } = useUser();
@@ -63,6 +64,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<AdminPanel />} />
         <Route path="/login/:code" element={<Login />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

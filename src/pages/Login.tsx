@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { SignUp, useUser } from '@clerk/clerk-react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { SignUp } from '@clerk/clerk-react';
 import axios, { AxiosError } from 'axios';
 import './Login.css';
 
@@ -20,13 +20,9 @@ interface InvitationValidation {
 
 const Login: React.FC = () => {
   const { code } = useParams<{ code: string }>();
-  const navigate = useNavigate();
-  const { isSignedIn, user } = useUser();
   const [validating, setValidating] = useState(true);
   const [isValid, setIsValid] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const inviteMarkedRef = useRef(false);
-  const previousSignedInRef = useRef(isSignedIn);
 
   useEffect(() => {
     const validateCode = async () => {
@@ -59,52 +55,6 @@ const Login: React.FC = () => {
 
     validateCode();
   }, [code]);
-
-  // Mark invitation as used when user successfully signs up/in
-  useEffect(() => {
-    const markInviteUsed = async () => {
-      // Check if we just became signed in (transition from false to true)
-      const justSignedIn = isSignedIn && !previousSignedInRef.current;
-      previousSignedInRef.current = isSignedIn;
-
-      if (justSignedIn && !inviteMarkedRef.current) {
-        const pendingCode = sessionStorage.getItem('pendingInviteCode');
-
-        if (pendingCode) {
-          inviteMarkedRef.current = true;
-
-          try {
-            await axios.post(`${API_URL}/invitations/use`, { code: pendingCode });
-            console.log('✅ Invitation marked as used successfully');
-            sessionStorage.removeItem('pendingInviteCode');
-          } catch (err) {
-            console.error('❌ Failed to mark invitation as used:', err);
-            // Don't block user, but log the error
-          }
-
-          // Navigate after marking (or attempting to mark)
-          navigate('/');
-        } else if (code) {
-          // Fallback: if no sessionStorage code but we have URL code
-          inviteMarkedRef.current = true;
-
-          try {
-            await axios.post(`${API_URL}/invitations/use`, { code });
-            console.log('✅ Invitation marked as used successfully (fallback)');
-          } catch (err) {
-            console.error('❌ Failed to mark invitation as used:', err);
-          }
-
-          navigate('/');
-        }
-      } else if (isSignedIn && inviteMarkedRef.current) {
-        // Already signed in and already processed invite
-        navigate('/');
-      }
-    };
-
-    markInviteUsed();
-  }, [isSignedIn, user, code, navigate]);
 
   if (validating) {
     return (
@@ -142,6 +92,8 @@ const Login: React.FC = () => {
           <SignUp
             routing="hash"
             signInUrl={`/login/${code}#/sign-in`}
+            afterSignUpUrl="/profile"
+            afterSignInUrl="/profile"
             appearance={{
               elements: {
                 rootBox: {

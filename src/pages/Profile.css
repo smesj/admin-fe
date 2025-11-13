@@ -1,0 +1,50 @@
+.profile-container {
+  min-height: 100vh;
+  background-color: #f9fafb;
+  padding: 2rem 1rem;
+}
+
+.profile-header {
+  max-width: 48rem;
+  margin: 0 auto 2rem;
+  text-align: center;
+}
+
+.profile-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.completion-message {
+  font-size: 1.125rem;
+  color: #4b5563;
+  margin-bottom: 0.75rem;
+  line-height: 1.75;
+}
+
+.close-message {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.profile-content {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .profile-container {
+    padding: 1rem 0.5rem;
+  }
+
+  .profile-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .completion-message {
+    font-size: 1rem;
+  }
+}
